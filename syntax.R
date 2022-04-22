@@ -43,7 +43,11 @@ filter <- filter %>%
   select(-n)
 
 
+library(skimr)
 
+
+filter %>%
+  skim()
 
 
 da <- read.table( 
