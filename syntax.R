@@ -23,6 +23,24 @@ df_2 <- do.call(rbind.data.frame, strsplit(df_2, split = ",", 2))
 filter <- df_0 %>%
   filter(price != "NA")
 
+filter <- filter %>%
+  group_by(datecrawled, name, datecreated) %>%
+  mutate(n = n()) %>% arrange(datecrawled, name, seller, 
+                              offertype, price, abtest, 
+                              vehicletype, yearofregistration, 
+                              gearbox, powerps, model, kilometer, 
+                              monthofregistration, fueltype, brand,
+                              notrepaireddamage, datecreated,
+                              nrofpictures, postalcode, lastseen, desc(n)) %>% 
+  ungroup %>%
+  distinct(datecrawled, name, seller, 
+           offertype, price, abtest, 
+           vehicletype, yearofregistration, 
+           gearbox, powerps, model, kilometer, 
+           monthofregistration, fueltype, brand,
+           notrepaireddamage, datecreated,
+           nrofpictures, postalcode, lastseen, .keep_all = TRUE) %>%
+  select(-n)
 
 
 da <- read.table( 
