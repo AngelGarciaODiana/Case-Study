@@ -43,6 +43,9 @@ filter <- filter %>%
   select(-n)
 
 
+
+
+
 da <- read.table( 
   text = readLines(file.choose(), warn = FALSE), 
   header = TRUE,  
