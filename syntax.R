@@ -28,11 +28,12 @@ data[num_vars] <- lapply(data[num_vars], function(x) as.numeric(as.character(x))
 date_vars <- c("datecrawled", "datecreated","lastseen")
 data[date_vars] <- lapply(data[date_vars], function(x) as.Date(as.character(x)))
 
-# Missing values
+# Missing and underrated values in price
 data <- data%>%replace_with_na_at(.vars = "price",
                           condition = ~.x < 100)
 
 skim(data$price)
+
 
 
 #####Descriptive statistics
