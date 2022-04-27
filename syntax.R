@@ -3,6 +3,7 @@ library(tidyverse)
 library(ggplot2)
 library(Hmisc)
 library(skimr)
+library(naniar)
 
 # Import data
 data<- read_csv("C:/Users/angel/Desktop/Case Study/Automotive_1.csv",quote = "\"",
@@ -27,18 +28,14 @@ data[num_vars] <- lapply(data[num_vars], function(x) as.numeric(as.character(x))
 date_vars <- c("datecrawled", "datecreated","lastseen")
 data[date_vars] <- lapply(data[date_vars], function(x) as.Date(as.character(x)))
 
+# Missing values
+data <- data%>%replace_with_na_at(.vars = "price",
+                          condition = ~.x < 100)
+
+skim(data$price)
+
 
 #####Descriptive statistics
 describe(data)
 
-
-# Missing values
 skim(data)
-
-
-
-ifelse(A$box == 6 & A$document == 75, "big", "other")
-
-
-
-
