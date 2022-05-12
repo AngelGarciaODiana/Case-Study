@@ -1,0 +1,89 @@
+---
+title: "Script"
+output: html_document
+---
+
+```{r libraries}
+library(dplyr)
+library(tidyverse)
+library(ggplot2)
+library(Hmisc)
+library(skimr)
+library(naniar)
+library(dlookr)
+library(visdat)
+library(plotly)
+```
+
+```{r importt and fix anormal values}
+# Import data
+data<- read_csv(file.choose(),quote = "\"",
+                col_types = cols(
+                  .default = col_character()))
+
+# Observations with wrong columns
+error_cases <- data[grep("Angebot", data$seller),1:(ncol(data)-1)]
+
+colnames(error_cases)[3:ncol(error_cases)] <- colnames(data)[4:ncol(data)]
+error_cases$seller <- "privat"
+
+# Corrected data frame
+data <- rbind.data.frame(data[-(grep("Angebot", data$seller)),], error_cases)
+
+char_vars <- c("name", "seller", "offertype",	"abtest", "vehicletype", "gearbox", "model", "fueltype", "brand", 
+               "notrepaireddamage", "nrofpictures", "postalcode")
+
+num_vars <- c("price", "yearofregistration","powerps","kilometer","monthofregistration")
+data[num_vars] <- lapply(data[num_vars], function(x) as.numeric(as.character(x)))
+
+date_vars <- c("datecrawled", "datecreated","lastseen")
+data[date_vars] <- lapply(data[date_vars], function(x) as.Date(as.character(x)))
+
+# Clean extra vars
+rm(error_cases, char_vars, date_vars, num_vars)
+```
+
+```{r Fix outliers and NAs}
+# Replacing 0 to NA
+data[data == 0] <- NA
+
+# Fix outliers
+boxplot(data$price)
+
+out_rm <- data$price[!data$price %in% boxplot.stats(data$price)$out]
+
+boxplot(out_rm)
+
+data <- as.data.frame(data[!data$price %in% boxplot.stats(data$price)$out,])
+
+data <- as.data.frame(data[!data$kilometer %in% boxplot.stats(data$kilometer)$out,])
+
+rm(out_rm)
+
+# Impute numeric NAs
+plot_na_pareto(data)
+
+plot_na_intersect(data)
+```
+
+```{python ML to outliers}
+import pandas as pa
+import sklearn.model_selection as sk
+# load and summarize the dataset
+from pandas import read_csv
+from sklearn.model_selection import train_test_split
+# load the dataset
+url = 'https://raw.githubusercontent.com/jbrownlee/Datasets/master/housing.csv'
+df = read_csv(url, header=None)
+# retrieve the array
+data = df.values
+# split into inpiut and output elements
+X, y = data[:, :-1], data[:, -1]
+# summarize the shape of the dataset
+print(X.shape, y.shape)
+# split into train and test sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=1)
+# summarize the shape of the train and test sets
+print(X_train.shape, X_test.shape, y_train.shape, y_test.shape)
+```
+
