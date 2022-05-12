@@ -4,9 +4,12 @@ library(ggplot2)
 library(Hmisc)
 library(skimr)
 library(naniar)
+library(dlookr)
+library(visdat)
+library(plotly)
 
 # Import data
-data<- read_csv("C:/Users/angel/Desktop/Case Study/Automotive_1.csv",quote = "\"",
+data<- read_csv(file.choose(),quote = "\"",
                 col_types = cols(
                   .default = col_character()))
 
@@ -28,15 +31,32 @@ data[num_vars] <- lapply(data[num_vars], function(x) as.numeric(as.character(x))
 date_vars <- c("datecrawled", "datecreated","lastseen")
 data[date_vars] <- lapply(data[date_vars], function(x) as.Date(as.character(x)))
 
-# Missing and underrated values in price
-data <- data%>%replace_with_na_at(.vars = "price",
-                          condition = ~.x < 100)
+# Clean extra vars
+rm(error_cases, char_vars, date_vars, num_vars)
 
-skim(data$price)
+# Replacing 0 to NA
+data[data == 0] <- NA
 
+# Fix outliers
+boxplot(data$price)
 
+out_rm <- data$price[!data$price %in% boxplot.stats(data$price)$out]
+
+boxplot(out_rm)
+
+data <- as.data.frame(data[!data$price %in% boxplot.stats(data$price)$out,])
+
+data <- as.data.frame(data[!data$kilometer %in% boxplot.stats(data$kilometer)$out,])
+
+rm(out_rm)
+
+# Impute numeric NAs
+plot_na_pareto(data)
+
+plot_na_intersect(data)
 
 #####Descriptive statistics
 describe(data)
 
 skim(data)
+skim(eliminated)
