@@ -13,6 +13,7 @@ library(naniar)
 library(dlookr)
 library(visdat)
 library(plotly)
+library(reticulate)
 ```
 
 ```{r importt and fix anormal values}
@@ -67,23 +68,46 @@ plot_na_intersect(data)
 ```
 
 ```{python ML to outliers}
-import pandas as pa
-import sklearn.model_selection as sk
 # load and summarize the dataset
+import pandas as pd
 from pandas import read_csv
 from sklearn.model_selection import train_test_split
+from datetime import datetime
 # load the dataset
-url = 'https://raw.githubusercontent.com/jbrownlee/Datasets/master/housing.csv'
-df = read_csv(url, header=None)
+data = pd.DataFrame(r.data)
+data["seller"].value_counts()
+data["seller"] = pd.Categorical(data["seller"])
+data["seller"].dtype
+for col in ["name", "seller", "offertype",	"abtest", "vehicletype", "gearbox", "model", "fueltype", "brand", "notrepaireddamage", "nrofpictures", "postalcode"]: data[col] = data[col].astype('str')
+data[["datecrawled", "datecreated","lastseen"]] = data[["datecrawled", "datecreated","lastseen"]].apply(pd.to_datetime, format='%Y-%m-%d')
+
 # retrieve the array
-data = df.values
+df = data.values
 # split into inpiut and output elements
-X, y = data[:, :-1], data[:, -1]
+X, y = df[:, :-1], df[:, -1]
 # summarize the shape of the dataset
 print(X.shape, y.shape)
 # split into train and test sets
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=1)
 # summarize the shape of the train and test sets
 print(X_train.shape, X_test.shape, y_train.shape, y_test.shape)
+
+data.info()
+
+data["gearbox"].value_counts()
+data["abtest"] = pd.Categorical(data["seller"])
+data["seller"].dtype
+
+```
+
+
+
+
+
+
+
+```{r}
+data <- py$data
+class(data)
 ```
 
