@@ -14,6 +14,7 @@ library(dlookr)
 library(visdat)
 library(plotly)
 library(reticulate)
+library(dataPreparation)
 ```
 
 ```{r importt and fix anormal values}
@@ -47,6 +48,9 @@ rm(error_cases, char_vars, date_vars, num_vars)
 ```{r Fix outliers and NAs}
 # Replacing 0 to NA
 data[data == 0] <- NA
+
+df <- remove_sd_outlier(data, cols = "auto", n_sigmas = 1, verbose = TRUE)
+skim(df)
 
 # Fix outliers
 boxplot(data$price)
@@ -89,15 +93,18 @@ data[["datecrawled", "datecreated","lastseen"]] = data[["datecrawled", "datecrea
 data.info() # variable types
 
 df = data[["price", "yearofregistration","powerps","kilometer","monthofregistration"]]
-
+df = df.replace(np.nan, 0)
 df = df.values
 
-imp = SimpleImputer(missing_values=np.nan, strategy='mean')
+imp = SimpleImputer(missing_values=0, strategy='mean')
 imp.fit(df)
 imp.statistics_
 df = imp.transform(df)
 df = pd.DataFrame(df)
-df = df.values
+df.columns = ["price", "yearofregistration","powerps","kilometer","monthofregistration"]
+for col in ["price", "powerps", "monthofregistration"]: df[col] = df[col].astype('int')
+
+
 
 # split into input and output elements
 X, y = df[:, :-1], df[:, -1]
@@ -128,11 +135,6 @@ print('MAE: %.3f' % mae)
 
 
 ```
-
-
-
-
-
 
 
 ```{r}
