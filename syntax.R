@@ -60,3 +60,32 @@ describe(data)
 
 skim(data)
 skim(eliminated)
+
+## PYTHON
+# split into input and output elements
+#X, y = df[:, :-1], df[:, -1]
+# split into train and test sets
+#X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=1)
+# fit the model
+#model = LinearRegression()
+#model.fit(X_train, y_train)
+# evaluate the model
+#yhat = model.predict(X_test)
+# evaluate predictions
+#mae = mean_absolute_error(y_test, yhat)
+# identify outliers in the training dataset
+#lof = LocalOutlierFactor()
+#yhat = lof.fit_predict(X_train)
+# select all rows that are not outliers
+#mask = yhat != -1
+#X_train, y_train = X_train[mask, :], y_train[mask]
+# fit the model
+#model = LinearRegression()
+#model.fit(X_train, y_train)
+# evaluate the model
+#yhat = model.predict(X_test)
+
+
+
+
+
