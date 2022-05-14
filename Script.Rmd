@@ -71,7 +71,7 @@ plot_na_pareto(data)
 plot_na_intersect(data)
 ```
 
-```{python ML to outliers}
+```{python ML to NA}
 # load and summarize the dataset
 import pandas as pd
 from pandas import read_csv
@@ -105,6 +105,9 @@ df.columns = ["price", "yearofregistration","powerps","kilometer","monthofregist
 for col in ["price", "powerps", "monthofregistration"]: df[col] = df[col].astype('int')
 
 
+```
+
+```{python}
 
 # split into input and output elements
 X, y = df[:, :-1], df[:, -1]
@@ -131,7 +134,6 @@ yhat = model.predict(X_test)
 # evaluate predictions
 mae = mean_absolute_error(y_test, yhat)
 print('MAE: %.3f' % mae)
-
 
 
 ```
