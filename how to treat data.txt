@@ -1,0 +1,8 @@
+categorical - most frequent data
+numerical - mean value
+
+
+PMM (Predictive Mean Matching)  – For numeric variables
+logreg(Logistic Regression) – For Binary Variables( with 2 levels)
+polyreg(Bayesian polytomous regression) – For Factor Variables (>= 2 levels)
+Proportional odds model (ordered, >= 2 levels)
